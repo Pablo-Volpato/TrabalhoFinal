@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+
+:root {
+  /* Colors: */
+  --unnamed-color-0b141f: #0b141f;
+  --unnamed-color-a4a4a4: #a4a4a4;
+  --unnamed-color-333333: #333333;
+  --unnamed-color-737373: #737373;
+  --unnamed-color-5ec4ff: #5ec4ff;
+
+  /* Font/text values */
+  --unnamed-font-family-open-sans: Open Sans;
+  --unnamed-font-style-normal: normal;
+  --unnamed-font-weight-600: 600px;
+  --unnamed-font-weight-normal: normal;
+  --unnamed-font-size-14: 14px;
+  --unnamed-font-size-16: 16px;
+  --unnamed-font-size-18: 18px;
+  --unnamed-font-size-28: 28px;
+  --unnamed-character-spacing-0: 0px;
+  --unnamed-character-spacing-0-03: 0.03px;
+  --unnamed-character-spacing-0-28: 0.28px;
+  --unnamed-character-spacing-0-7: 0.7px;
+  --unnamed-character-spacing-0-04: 0.04px;
+  --unnamed-line-spacing-19: 19px;
+  --unnamed-line-spacing-22: 22px;
+  --unnamed-line-spacing-24: 24px;
+  --unnamed-line-spacing-38: 38px;
+  --unnamed-decoration-underline: underline;
+}
+
+.container-wrapper-pagination {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.row-container-pagination {
+  display: flex;
+  align-items: center;
+  align-self: center;
+}
+.select-pages-pagination {
+  font: normal normal normal 18px/24px Open Sans;
+  letter-spacing: 0.04px;
+  color: #202020;
+  opacity: 1;
+  margin-bottom: 10px;
+
+}
+
+.page-item-quantity {
+  padding: 5px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #dbdbdb;
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
+
+.page-number {
+  color: #333333;
+  font-family: 'Open Sans';
+  font-size: 18px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  background-color: white;
+}
+
+.page-number:focus {
+  outline: none;
+}
+
+.page-number-active {
+  background-color: #ffda53;
+  border-radius: 100%;
+}
+
+.btn-goto {
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background: #ffda53 0% 0% no-repeat padding-box;
+  border: none;
+  border-radius: 5px;
+  opacity: 1;
+  margin-bottom: 10px;
+}
+
+.btn-goto-erro {
+  background-color: #e93a3a;
+}
+
+.input-goto {
+  margin-left: 10px;
+  margin-right: 20px;
+  width: 50px;
+  padding: 5px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.pagination {
+  align-items: center;
+}
+
+.pagination li {
+  border: 5px solid white;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  border-top: 0px;
+  border-bottom: 0px;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+.pagination span {
+  border-top: 0px;
+  border-bottom: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  color: #ffda53;
+  font-size: 38px;
+  position: relative;
+  bottom: 5px;
+}
+
+.pagination > li:first-of-type > a {
+  border-left: 0px solid #ddd;
+}
+
+.pagination > li:last-of-type > a {
+  border-right: 0px solid #ddd;
+}
+
+.button-page {
+  border: none;
+  background-color: white;
+}
+
+.button-page:focus {
+  outline: none;
+}
+
+.page-map-pagination {
+  font-family: 'Open Sans';
+  color: #737373;
+  margin-bottom: 15px;
+  margin-left: 20px;
+}

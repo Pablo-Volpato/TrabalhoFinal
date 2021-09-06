@@ -1,0 +1,242 @@
+/* eslint-disable */
+import React, { FC, useState, useEffect } from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import { Form, Col, Row } from 'react-bootstrap';
+import { Botao, Content } from './styles';
+import { Dialog } from 'primereact/dialog';
+import { Spinner } from 'react-bootstrap';
+import { GrupoMacroTypesGryd } from '../../../Types/grupoMacroTypesGryd ';
+import { MultiSelect } from 'primereact/multiselect';
+import { DispositivosTypesGryd } from '../../../Types/dispositivosTypesGryd';
+import { Checkbox } from '../../../components/Checkbox';
+import axios from '../../../config/axiosMaquina';
+import Select from '../../../components/Select';
+
+const ModalCadastro = () => {
+  const [show, setShow] = useState<Boolean>(false);
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState();
+  const [ativo, setAtivo] = useState(true); 
+  const [ hasError, setHasError] = useState(false);
+  const [validated, setValidated] = useState(false);
+  const [grupo_macro_de_veiculos, setGrupo_macro_de_veiculos] = useState<any>();
+  const [grupoMacrodeVeiculos, setGrupoMacrodeVeiculos] = useState<GrupoMacroTypesGryd[]>([]);
+  const [isDialogVisibleCadNaoEfetuado, setIsDialogVisibleCadNaoEfetuado] = useState(false);
+  const [isDialogVisibleCadEfetuado, setIsDialogVisibleCadEfetuado] = useState(false);
+  const [dispositivos, setDispositivos] = useState<DispositivosTypesGryd[]>([]);
+  const [dispositivosID, setDispositivosID] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+ 
+  const usuarioId = 2;
+  const history = useHistory();
+  useEffect(() => {
+    obterGrupoMacrodeVeiculos();
+    obterDispositivos();
+  }, []);
+
+  const select = dispositivos.map((tipo, index) => ({ name: tipo.nome, code: tipo.id }));
+
+  const cadastrarGrupodeVeiculos = async (event: any) => {
+    event.preventDefault();
+    const novoNome = nome.trim();
+    setValidated(true)
+    if (novoNome.length <= 0) {
+      setNome(novoNome);
+      setHasError(true)
+      return;
+    }
+    const dados = {
+      idUsuario: usuarioId,
+      nome: nome,
+      descricao: descricao,
+      grupoMacroId: grupo_macro_de_veiculos,
+      "dispositivoId": dispositivosID.map((tipo: any) => tipo.code)
+    }
+    try {
+      setLoading(true)
+      await axios.post(`/grupoVeiculos?idUsuario${usuarioId}`, dados)
+    
+      setIsDialogVisibleCadEfetuado(true);
+      setLoading(false)
+
+    } catch (error) {
+      setIsDialogVisibleCadNaoEfetuado(true);
+    }
+  }
+  
+  const obterGrupoMacrodeVeiculos = async () => {
+    try {
+      const response = await axios.get(`/grupoMacroDeVeiculos/listaDadosGrid?idUsuario${usuarioId}`);
+      setGrupoMacrodeVeiculos(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obterDispositivos= async () => {
+    try {
+      const { data} = await axios.get(`/dispositivo?idUsuari=${usuarioId}`);
+      setDispositivos(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }; 
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
+  function back() {
+    history.go(0);
+  }
+  return (
+    <>
+      <Button
+        style={{
+          backgroundColor: 'transparent',
+          width: "44px",
+          height: "40px",
+          borderColor: "#ffda53",
+          borderRadius: "5px",
+          opacity: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: '0',
+          marginLeft: "10px",
+          paddingRight: "30px",
+          paddingBottom: 0
+        }}
+        onClick={handleShow}
+      >
+
+        <i
+          style={{ fontSize: 18, color: '#000', textDecoration: 'none' }}
+          className="pi pi-plus"
+        ></i>
+
+      </Button>
+
+      <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        enforceFocus
+        show={show}
+        onHide={handleClose}
+      >
+        <Modal.Header style={{ alignSelf: 'center' }}>
+          <h2 className="titulo">Grupo de Veículos</h2>
+        </Modal.Header>
+        <Modal.Body style={{ fontSize: 20, alignSelf: 'center', width: "90%" }}>
+        <Dialog
+            header="Grupo de veículos foi cadastrado com sucesso!"
+            footer={
+              <>
+                <Button  onClick={() =>  back()} >OK</Button>
+              </>
+            }
+            visible={isDialogVisibleCadEfetuado}
+            style={{ width: '50vw' }}
+            modal
+            onHide={() => setIsDialogVisibleCadEfetuado(false)}
+          />
+          <Dialog
+            header="Erro ao cadastrar, verifique os campos!"
+            footer={
+              <>
+                <Button onClick={() => setIsDialogVisibleCadNaoEfetuado(false)} >OK</Button>
+              </>
+            }
+            visible={isDialogVisibleCadNaoEfetuado}
+            style={{ width: '50vw' }}
+            modal
+            onHide={() => setIsDialogVisibleCadNaoEfetuado(false)}
+          />
+             {loading ? (
+            <Spinner
+              animation="border"
+              variant="warning"
+              style={{
+                display: 'flex',
+                marginLeft: '47.5%',
+                marginTop: '5%',
+                marginBottom: '5%',
+              }}
+            />
+          ) : (
+            <Form noValidate validated={validated} onSubmit={cadastrarGrupodeVeiculos}>
+              <Form.Row>
+                <Form.Group as={Col} sm={6}>
+                  <Form.Label className="requiredField">NOME
+                  </Form.Label>
+                  <Form.Control
+                    value={nome}
+                    onChange={(event: any) => setNome(event.target.value)}
+                    name="nome"
+                    type="text"
+                    required
+                    title="Preencha com o nome do grupo de veículos "
+                    maxLength={256}
+                  />
+                  {hasError && <small style={{ color: 'red' }}> O nome é um campo obrigatorio!!</small>}
+                  <Select
+                    style={{ borderColor: grupo_macro_de_veiculos === undefined && validated ? '#dc3545' : '' }}
+                    required={true}
+                    value={grupo_macro_de_veiculos}
+                    textInputTitle="GRUPO MACRO DE VEÍCULOS"
+                    onChange={(e: any) => setGrupo_macro_de_veiculos(e.target.value)}>
+                    <option value="0">Selecione o grupo macro</option>
+                    {grupoMacrodeVeiculos.map((tipo, index) => (<option value={tipo.id}>{tipo.nome}</option>))}
+                  </Select>
+                  <Checkbox ativo={ativo} checked={() => setAtivo(!ativo)} />
+                </Form.Group>
+                <Form.Group as={Col} sm={6}>
+                  <Form.Label className="requiredField">DESCRIÇÃO</Form.Label>
+                  <Form.Control
+                    value={descricao}
+                    onChange={(event: any) => setDescricao((event.target.value))}
+                    name="Descrição"
+                    type="text"
+                    title="Preencha com a descrição do Grupo de Veículos"
+                    maxLength={256}
+                  />
+                  <Form.Label style={{ marginTop: 8 }} className="requiredField">DISPOSITIVO</Form.Label>
+                  <div>
+                    <MultiSelect
+                      style={{ width: "100%", borderColor: dispositivosID.length <= 0 && validated ? '#dc3545' : '' }}
+                      emptyFilterMessage={<Button></Button>}
+                      display="chip"
+                      optionLabel="name"
+                      value={dispositivosID}
+                      options={select} onChange={(e: any) => setDispositivosID(e.target.value)} filter />
+                  </div>
+                  
+                </Form.Group>
+                <Botao className="container-buttons justify-content-between" >
+                  <Form.Group as={Col} md={2}>
+                    <Button
+                      className="btn-cancelar"
+                      onClick={() => {
+                        handleClose()
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                  </Form.Group>
+                  <Form.Group as={Col} md={2}>
+                    <Button className="btn-enviar" type="submit">
+                      Confirmar
+                    </Button>
+                  </Form.Group>
+                </Botao>
+                </Form.Row>
+                </Form>
+          )}
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+};
+
+export default ModalCadastro;
